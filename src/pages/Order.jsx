@@ -28,6 +28,8 @@ export default function Order() {
   const [itemNotes, setItemNotes] = useState({})
   const [submitting, setSubmitting] = useState(false)
   const [submittedId, setSubmittedId] = useState('')
+  const [confirmOpen, setConfirmOpen] = useState(false)
+  const [successOpen, setSuccessOpen] = useState(false)
   const [error, setError] = useState('')
 
   const visibleItems = useMemo(() => menuItems.filter(item => (
@@ -60,10 +62,13 @@ export default function Order() {
     })
   }
 
-  async function submitOrder(e) {
+  function requestSubmitOrder(e) {
     e.preventDefault()
     if (!seat || !cartItems.length) return
+    setConfirmOpen(true)
+  }
 
+  async function submitOrder() {
     setSubmitting(true)
     setError('')
 
@@ -85,6 +90,8 @@ export default function Order() {
       })
 
       setSubmittedId(orderId)
+      setSuccessOpen(true)
+      setConfirmOpen(false)
       setCart({})
       setItemNotes({})
       setCustomerNote('')
@@ -148,7 +155,7 @@ export default function Order() {
       </section>
 
       <aside className="lg:sticky lg:top-20 lg:self-start">
-        <form onSubmit={submitOrder} className="card overflow-hidden">
+        <form onSubmit={requestSubmitOrder} className="card overflow-hidden">
           <div className="flex items-center justify-between bg-coffee-900 p-4 text-white">
             <div>
               <p className="text-sm font-bold opacity-80">Đơn của bạn</p>
@@ -190,5 +197,44 @@ export default function Order() {
         </form>
       </aside>
     </div>
+
+    {confirmOpen && <div className="fixed inset-0 z-50 grid place-items-center bg-coffee-900/60 p-4">
+      <div className="w-full max-w-md rounded-lg bg-white p-5 shadow-2xl">
+        <h2 className="text-2xl font-black">Xác nhận đơn</h2>
+        <p className="mt-2 text-sm font-semibold text-coffee-700">Vui lòng kiểm tra lại món trước khi gửi cho nhân viên.</p>
+
+        <div className="mt-4 max-h-72 space-y-2 overflow-y-auto">
+          {cartItems.map(({ item, quantity, note, subtotal }) => <div key={item.id} className="rounded-lg bg-coffee-50 p-3">
+            <div className="flex justify-between gap-3">
+              <b>{quantity} x {item.name.vi}</b>
+              <span className="font-bold">{formatCurrency(subtotal)}</span>
+            </div>
+            {note && <p className="mt-1 text-sm font-semibold text-coffee-700">Ghi chú: {note}</p>}
+          </div>)}
+        </div>
+
+        {customerNote && <p className="mt-3 rounded-lg bg-amber-50 p-3 text-sm font-semibold text-amber-800">Ghi chú đơn: {customerNote}</p>}
+
+        <div className="mt-4 flex items-center justify-between border-t border-coffee-100 pt-4">
+          <span className="font-bold">Tổng cộng</span>
+          <b className="text-2xl text-coffee-700">{formatCurrency(total)}</b>
+        </div>
+
+        <div className="mt-5 grid gap-3 sm:grid-cols-2">
+          <button type="button" className="btn-secondary" onClick={() => setConfirmOpen(false)} disabled={submitting}>Kiểm tra lại</button>
+          <button type="button" className="btn-primary" onClick={submitOrder} disabled={submitting}>{submitting ? 'Đang gửi...' : 'Xác nhận gửi'}</button>
+        </div>
+      </div>
+    </div>}
+
+    {successOpen && <div className="fixed inset-0 z-50 grid place-items-center bg-coffee-900/60 p-4">
+      <div className="w-full max-w-md rounded-lg bg-white p-6 text-center shadow-2xl">
+        <div className="mx-auto grid h-14 w-14 place-items-center rounded-full bg-green-100 text-3xl text-green-700">✓</div>
+        <h2 className="mt-4 text-2xl font-black">Bạn đã đặt món thành công</h2>
+        <p className="mt-3 text-coffee-700">Nhân viên đã nhận đơn cho {seat.label}. Vui lòng không đặt lại đơn để tránh nhầm lẫn cho nhân viên.</p>
+        {submittedId && <p className="mt-3 rounded-lg bg-coffee-50 p-3 text-sm font-black text-coffee-700">Mã đơn: {submittedId.slice(0, 6).toUpperCase()}</p>}
+        <button type="button" className="btn-primary mt-5 w-full" onClick={() => setSuccessOpen(false)}>Đã hiểu</button>
+      </div>
+    </div>}
   </main><Footer /></>
 }
