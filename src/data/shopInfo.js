@@ -1,7 +1,7 @@
 export const shopInfo = {
   name: { vi: 'Tiệm Cà Phê Bình An', en: 'Binh An Coffee Shop' },
   tagline: { vi: 'Bình An trong từng ly cà phê.', en: 'Peace in every cup.' },
-  address: { vi: 'Trường Xuân, Đắk Song', en: 'Truong Xuan, Dak Song' },
+  address: { vi: 'Trường Xuân, Lâm Đồng', en: 'Truong Xuan, Lam Dong' },
   phone: '0962431833',
   phoneDisplay: '0962 431 833',
   secondaryPhone: '0338709098',

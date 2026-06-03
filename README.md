@@ -1,6 +1,6 @@
 # Binh An Coffee
 
-Website for **Tiệm Cà Phê Bình An**, a small peaceful coffee shop in Trường Xuân, Đắk Song.
+Website for **Tiệm Cà Phê Bình An**, a small peaceful coffee shop in Trường Xuân, Lâm Đồng.
 
 Live website:
 
