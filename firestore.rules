@@ -1,0 +1,72 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isStaff() {
+      return signedIn()
+        && exists(/databases/$(database)/documents/staff/$(request.auth.uid));
+    }
+
+    function isKnownSeat() {
+      return request.resource.data.seatId in [
+        '5',
+        '6',
+        'cua-kinh',
+        'sofa-nau',
+        'sofa-mau',
+        'cua-so-1',
+        'cua-so-2',
+        '13',
+        '14',
+        '15',
+        '16',
+        '17',
+        '18',
+        'lau-19',
+        'lau-20',
+        'lau-21',
+        'lau-22',
+        'ban-dai'
+      ];
+    }
+
+    function isValidOrder() {
+      return request.resource.data.keys().hasOnly([
+        'seatId',
+        'seatLabel',
+        'items',
+        'total',
+        'customerNote',
+        'status',
+        'createdAt',
+        'updatedAt'
+      ])
+      && request.resource.data.seatId is string
+      && request.resource.data.seatLabel is string
+      && isKnownSeat()
+      && request.resource.data.items is list
+      && request.resource.data.items.size() >= 1
+      && request.resource.data.items.size() <= 30
+      && request.resource.data.total is number
+      && request.resource.data.total >= 0
+      && request.resource.data.total <= 5000000
+      && request.resource.data.status == 'new'
+      && (!('customerNote' in request.resource.data) || request.resource.data.customerNote is string);
+    }
+
+    match /orders/{orderId} {
+      allow create: if isValidOrder();
+      allow read, update: if isStaff();
+      allow delete: if false;
+    }
+
+    match /staff/{userId} {
+      allow read: if signedIn() && request.auth.uid == userId;
+      allow write: if false;
+    }
+  }
+}

@@ -1,3 +1,14 @@
-// Future Firebase Auth helpers go here.
-export function demoLogin() { localStorage.setItem('demoStaffLoggedIn','true') }
-export function demoLogout() { localStorage.removeItem('demoStaffLoggedIn') }
+import { onAuthStateChanged, signInWithEmailAndPassword, signOut } from 'firebase/auth'
+import { auth } from './firebase.js'
+
+export function loginStaff(email, password) {
+  return signInWithEmailAndPassword(auth, email, password)
+}
+
+export function logoutStaff() {
+  return signOut(auth)
+}
+
+export function watchStaffAuth(callback) {
+  return onAuthStateChanged(auth, callback)
+}
