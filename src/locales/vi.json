@@ -1,0 +1,6 @@
+{
+  "nav": {"home":"Trang chủ","menu":"Thực đơn","gallery":"Hình ảnh","location":"Địa chỉ","admin":"Quản lý"},
+  "hero": {"title":"Tiệm Cà Phê Bình An","subtitle":"Một góc nhỏ bình yên tại Trường Xuân.","desc":"Thưởng thức cà phê, gặp gỡ bạn bè hoặc nghỉ chân trên tuyến QL14 trong không gian ấm áp và thân thiện.","viewMenu":"Xem thực đơn","directions":"Chỉ đường"},
+  "sections": {"about":"Về Bình An","best":"Món được yêu thích","menu":"Thực đơn","gallery":"Không gian quán","location":"Địa chỉ & liên hệ"},
+  "admin": {"login":"Đăng nhập nhân viên","dashboard":"Bảng điều khiển","reports":"Trạng thái website"}
+}

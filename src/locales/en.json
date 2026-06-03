@@ -1,0 +1,6 @@
+{
+  "nav": {"home":"Home","menu":"Menu","gallery":"Gallery","location":"Location","admin":"Admin"},
+  "hero": {"title":"Binh An Coffee Shop","subtitle":"A peaceful little coffee spot in Truong Xuan.","desc":"Enjoy coffee, meet friends, or take a relaxing break along National Route 14 in a warm and friendly space.","viewMenu":"View Menu","directions":"Get Directions"},
+  "sections": {"about":"About Binh An","best":"Best Sellers","menu":"Menu","gallery":"Shop Gallery","location":"Location & Contact"},
+  "admin": {"login":"Staff Login","dashboard":"Dashboard","reports":"Website Status"}
+}
