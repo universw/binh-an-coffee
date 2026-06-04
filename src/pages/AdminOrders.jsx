@@ -40,9 +40,20 @@ function playOrderSound() {
     oscillator.stop(start + duration + 0.02)
   }
 
-  beep(now, 740, 0.22)
-  beep(now + 0.32, 920, 0.28)
-  window.setTimeout(() => audio.close(), 900)
+  const pattern = [
+    [0, 740, 0.28],
+    [0.38, 920, 0.32],
+    [0.9, 740, 0.28],
+    [1.28, 920, 0.32],
+    [1.8, 740, 0.28],
+    [2.18, 980, 0.45]
+  ]
+
+  pattern.forEach(([offset, frequency, duration]) => {
+    beep(now + offset, frequency, duration)
+  })
+
+  window.setTimeout(() => audio.close(), 3200)
 }
 
 export default function AdminOrders() {
