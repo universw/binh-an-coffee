@@ -1,29 +1,30 @@
-# Binh An Coffee
+# Tiệm Cà Phê Bình An
 
 Website for **Tiệm Cà Phê Bình An**, a small peaceful coffee shop in Trường Xuân, Lâm Đồng.
 
-Live website:
+Live website: https://binh-an-coffee.web.app/
 
-https://binh-an-coffee.web.app/
+## Main Functions
 
-## About
+### For Customers
 
-This project is the public website and simple QR ordering system for Binh An Coffee.
+- View shop information, opening hours, phone number, Wi-Fi name, and location.
+- Browse the drink and food menu.
+- Switch between Vietnamese and English.
+- Scan a table QR code and order directly from that seat.
+- Confirm the order before sending.
+- See a success message after the order is sent.
 
-Customers can:
+### For Staff
 
-- View shop information
-- Browse the drink and food menu
-- Switch between Vietnamese and English
-- Scan a table QR code to order from their seat
+- Login to the private admin area.
+- View new customer orders on the kitchen dashboard.
+- Hear an alert sound when a new order arrives.
+- See the table or seat name for each order.
+- Update order status while preparing and serving.
+- Open the QR code page for all tables and seating areas.
 
-Staff can:
-
-- Login to the private admin area
-- View incoming orders in the kitchen dashboard
-- Print QR codes for each table or seating area
-
-## Main Pages
+## Important Pages
 
 - Homepage: https://binh-an-coffee.web.app/
 - Menu: https://binh-an-coffee.web.app/menu
@@ -31,12 +32,18 @@ Staff can:
 - Kitchen dashboard: https://binh-an-coffee.web.app/admin/orders
 - QR code page: https://binh-an-coffee.web.app/admin/seats
 
+## Customer QR Orders
+
+Each table or seat has its own permanent QR code.
+
 Example customer order link:
 
 https://binh-an-coffee.web.app/order?seat=5
 
-## Notes
+When a customer orders from a QR code, the kitchen dashboard receives the order live.
 
-The QR codes are permanent. Each table or seat has its own link, and every new customer order is sent to the kitchen dashboard.
+## Seat Names
 
-The project is hosted with Firebase and updated through GitHub.
+The QR system supports these table and seat names:
+
+5, 6, Cửa Kính, Sofa Nâu, Sofa Màu, Cửa Sổ 1, Cửa Sổ 2, 13, 14, 15, 16, 17, 18, Lầu 19, lầu 20, lầu 21, lầu 22, Bàn Dài.
