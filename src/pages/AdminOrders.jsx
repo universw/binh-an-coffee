@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from 'react'
-import { CheckCircle2, Clock, Coffee, Loader2, XCircle } from 'lucide-react'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { Bell, BellOff, CheckCircle2, Clock, Coffee, Loader2, XCircle } from 'lucide-react'
 import { orderStatuses, subscribeToActiveOrders, updateOrderStatus } from '../services/orderService.js'
 import { formatCurrency } from '../utils/formatCurrency.js'
 
@@ -17,14 +17,56 @@ function formatTime(value) {
   }).format(value.toDate())
 }
 
+function playOrderSound() {
+  const AudioContext = window.AudioContext || window.webkitAudioContext
+  if (!AudioContext) return
+
+  const audio = new AudioContext()
+  const now = audio.currentTime
+
+  function beep(start, frequency, duration) {
+    const oscillator = audio.createOscillator()
+    const gain = audio.createGain()
+
+    oscillator.type = 'sine'
+    oscillator.frequency.setValueAtTime(frequency, start)
+    gain.gain.setValueAtTime(0.0001, start)
+    gain.gain.exponentialRampToValueAtTime(0.18, start + 0.02)
+    gain.gain.exponentialRampToValueAtTime(0.0001, start + duration)
+
+    oscillator.connect(gain)
+    gain.connect(audio.destination)
+    oscillator.start(start)
+    oscillator.stop(start + duration + 0.02)
+  }
+
+  beep(now, 740, 0.22)
+  beep(now + 0.32, 920, 0.28)
+  window.setTimeout(() => audio.close(), 900)
+}
+
 export default function AdminOrders() {
   const [orders, setOrders] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [updating, setUpdating] = useState('')
+  const [soundEnabled, setSoundEnabled] = useState(false)
+  const knownNewOrderIds = useRef(new Set())
+  const initializedOrders = useRef(false)
 
   useEffect(() => {
     const unsubscribe = subscribeToActiveOrders(nextOrders => {
+      const newOrderIds = nextOrders.filter(order => order.status === 'new').map(order => order.id)
+
+      if (!initializedOrders.current) {
+        knownNewOrderIds.current = new Set(newOrderIds)
+        initializedOrders.current = true
+      } else {
+        const hasNewIncomingOrder = newOrderIds.some(orderId => !knownNewOrderIds.current.has(orderId))
+        knownNewOrderIds.current = new Set(newOrderIds)
+        if (soundEnabled && hasNewIncomingOrder) playOrderSound()
+      }
+
       setOrders(nextOrders)
       setLoading(false)
       setError('')
@@ -34,7 +76,7 @@ export default function AdminOrders() {
     })
 
     return unsubscribe
-  }, [])
+  }, [soundEnabled])
 
   const grouped = useMemo(() => columns.reduce((acc, column) => ({
     ...acc,
@@ -50,6 +92,11 @@ export default function AdminOrders() {
     }
   }
 
+  function enableSound() {
+    playOrderSound()
+    setSoundEnabled(true)
+  }
+
   return <div>
     <div className="flex flex-wrap items-end justify-between gap-4">
       <div>
@@ -60,6 +107,17 @@ export default function AdminOrders() {
         <p className="text-sm text-slate-500">Đơn đang xử lý</p>
         <b className="text-2xl">{orders.length}</b>
       </div>
+    </div>
+
+    <div className={`mt-5 flex flex-wrap items-center justify-between gap-3 rounded-lg p-4 shadow-sm ${soundEnabled ? 'bg-green-50 text-green-800' : 'bg-amber-50 text-amber-800'}`}>
+      <div className="flex items-center gap-3">
+        {soundEnabled ? <Bell size={20} /> : <BellOff size={20} />}
+        <div>
+          <b>{soundEnabled ? 'Âm báo đang bật' : 'Âm báo chưa bật'}</b>
+          <p className="text-sm font-semibold opacity-80">{soundEnabled ? 'Khi có đơn mới, trang bếp sẽ phát âm thanh.' : 'Bấm bật âm báo một lần sau khi mở trang bếp.'}</p>
+        </div>
+      </div>
+      {!soundEnabled && <button type="button" onClick={enableSound} className="rounded-lg bg-coffee-700 px-4 py-2 text-sm font-black text-white">Bật âm báo</button>}
     </div>
 
     {loading && <div className="mt-8 flex items-center gap-2 rounded-lg bg-white p-5 font-bold shadow-sm"><Loader2 className="animate-spin" size={18} />Đang tải đơn...</div>}
